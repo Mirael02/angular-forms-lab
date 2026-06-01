@@ -1,1 +1,11 @@
-<p>order-summary works!</p>
+<mat-card class="summary-card" style="margin-top: 20px;">
+  <mat-card-title style="padding: 16px;">Ringkasan Pesanan</mat-card-title>
+  <mat-card-content>
+    <div class="total-row" style="padding: 10px 0; font-size: 1.2em;">
+      <strong>Total Pembayaran: </strong>
+      <strong class="total-amount" style="color: #e91e63;">
+        {{ (total | async) | currency:'IDR':'symbol':'1.0-0' }}
+      </strong>
+    </div>
+  </mat-card-content>
+</mat-card>

@@ -1,9 +1,14 @@
-import { Component } from '@angular/core';
+import { Component, Input } from '@angular/core';
+import { CommonModule } from '@angular/common';
+import { MatCardModule } from '@angular/material/card';
+import { Observable } from 'rxjs';
 
 @Component({
   selector: 'app-order-summary',
-  imports: [],
+  standalone: true,
+  imports: [CommonModule, MatCardModule],
   templateUrl: './order-summary.html',
-  styleUrl: './order-summary.scss',
 })
-export class OrderSummary {}
+export class OrderSummary {
+  @Input() total!: Observable<number>;
+}

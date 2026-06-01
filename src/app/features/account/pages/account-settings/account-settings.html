@@ -1,0 +1,123 @@
+<div class="account-container" style="padding: 20px; max-width: 800px; margin: 0 auto;">
+  <h2>Pengaturan Akun</h2>
+
+  <div *ngIf="isLoading" style="display: flex; justify-content: center; padding: 50px;">
+    <mat-spinner diameter="40"></mat-spinner>
+  </div>
+
+  <form *ngIf="!isLoading" [formGroup]="settingsForm">
+    <!-- Tipe Akun -->
+    <mat-card class="section-card" style="margin-bottom: 20px;">
+      <mat-card-title style="padding: 16px;">Tipe Akun</mat-card-title>
+      <mat-card-content>
+        <mat-radio-group formControlName="accountType" style="display: flex; gap: 20px;">
+          <mat-radio-button value="personal">
+            <span style="display: flex; align-items: center; gap: 5px;">
+              <mat-icon>person</mat-icon> Personal
+            </span>
+          </mat-radio-button>
+          <mat-radio-button value="business">
+            <span style="display: flex; align-items: center; gap: 5px;">
+              <mat-icon>business</mat-icon> Bisnis
+            </span>
+          </mat-radio-button>
+        </mat-radio-group>
+      </mat-card-content>
+    </mat-card>
+
+    <!-- Informasi Pribadi -->
+    <mat-card class="section-card" style="margin-bottom: 20px;">
+      <mat-card-title style="padding: 16px;">Informasi Pribadi</mat-card-title>
+      <mat-card-content>
+        <div style="display: flex; gap: 15px; flex-wrap: wrap;">
+          <mat-form-field appearance="outline" style="flex: 1; min-width: 250px;">
+            <mat-label>Nama Lengkap</mat-label>
+            <input matInput formControlName="fullName">
+            <mat-error>Nama wajib diisi</mat-error>
+          </mat-form-field>
+
+          <mat-form-field appearance="outline" style="flex: 1; min-width: 250px;">
+            <mat-label>No. HP</mat-label>
+            <input matInput formControlName="phone">
+            <mat-error *ngIf="settingsForm.get('phone')?.errors?.['required']">No. HP wajib diisi</mat-error>
+            <mat-error *ngIf="settingsForm.get('phone')?.errors?.['pattern']">Format tidak valid (08xxxxxxxxxx)</mat-error>
+          </mat-form-field>
+        </div>
+
+        <mat-form-field appearance="outline" style="width: 100%;">
+          <mat-label>Email</mat-label>
+          <input matInput formControlName="email" type="email">
+          <mat-spinner *ngIf="emailCtrl?.pending" matSuffix diameter="20"></mat-spinner>
+          <mat-icon matSuffix color="primary" *ngIf="emailCtrl?.valid && !emailCtrl?.pending">verified</mat-icon>
+          
+          <mat-error *ngIf="emailCtrl?.errors?.['required']">Email wajib diisi</mat-error>
+          <mat-error *ngIf="emailCtrl?.errors?.['email']">Format email tidak valid</mat-error>
+          <mat-error *ngIf="emailCtrl?.errors?.['emailTaken']">Email sudah digunakan akun lain</mat-error>
+          <mat-hint *ngIf="emailCtrl?.pending">Memeriksa ketersediaan email...</mat-hint>
+        </mat-form-field>
+
+        <mat-form-field appearance="outline" style="width: 100%;">
+          <mat-label>Bio</mat-label>
+          <textarea matInput formControlName="bio" rows="3"></textarea>
+          <mat-hint align="end">{{ settingsForm.get('bio')?.value?.length || 0 }} / 200</mat-hint>
+          <mat-error>Maksimal 200 karakter</mat-error>
+        </mat-form-field>
+      </mat-card-content>
+    </mat-card>
+
+    <!-- Informasi Perusahaan (Conditional) -->
+    <mat-card class="section-card" *ngIf="isBusiness" style="margin-bottom: 20px;">
+      <mat-card-title style="padding: 16px;">Informasi Perusahaan</mat-card-title>
+      <mat-card-content formGroupName="business">
+        <mat-form-field appearance="outline" style="width: 100%;">
+          <mat-label>Nama Perusahaan</mat-label>
+          <input matInput formControlName="companyName">
+          <mat-error>Nama perusahaan wajib diisi (min. 3 karakter)</mat-error>
+        </mat-form-field>
+
+        <div style="display: flex; gap: 15px; flex-wrap: wrap;">
+          <mat-form-field appearance="outline" style="flex: 1; min-width: 250px;">
+            <mat-label>NPWP</mat-label>
+            <input matInput formControlName="npwp" placeholder="00.000.000.0-000.000">
+            <mat-hint>Format: 00.000.000.0-000.000</mat-hint>
+            <mat-error *ngIf="businessGrp.get('npwp')?.errors?.['required']">NPWP wajib diisi</mat-error>
+            <mat-error *ngIf="businessGrp.get('npwp')?.errors?.['pattern']">Format NPWP tidak valid</mat-error>
+          </mat-form-field>
+
+          <mat-form-field appearance="outline" style="flex: 1; min-width: 250px;">
+            <mat-label>Sektor Usaha</mat-label>
+            <mat-select formControlName="businessSector">
+              <mat-option value="retail">Retail / Perdagangan</mat-option>
+              <mat-option value="manufacture">Manufaktur</mat-option>
+              <mat-option value="services">Jasa</mat-option>
+              <mat-option value="tech">Teknologi</mat-option>
+              <mat-option value="other">Lainnya</mat-option>
+            </mat-select>
+            <mat-error>Pilih sektor usaha</mat-error>
+          </mat-form-field>
+        </div>
+      </mat-card-content>
+    </mat-card>
+
+    <!-- Action Bar -->
+    <div style="display: flex; align-items: center; justify-content: space-between; padding: 15px; background: #f5f5f5; border-radius: 4px; margin-top: 20px;">
+      <div style="display: flex; align-items: center; gap: 10px;">
+        <mat-icon *ngIf="settingsForm.pristine" color="primary">cloud_done</mat-icon>
+        <mat-icon *ngIf="settingsForm.dirty && settingsForm.valid" color="warn">edit_note</mat-icon>
+        <span *ngIf="settingsForm.pristine">Tersimpan</span>
+        <span *ngIf="settingsForm.dirty" style="color: #f44336;">Ada perubahan belum disimpan</span>
+      </div>
+
+      <div style="display: flex; align-items: center; gap: 15px;">
+        <span *ngIf="saveSuccess" style="color: #4caf50; display: flex; align-items: center; gap: 5px;">
+          <mat-icon>check_circle</mat-icon> Berhasil disimpan!
+        </span>
+        <button mat-raised-button color="primary" [disabled]="!canSave || isSaving || settingsForm.pending" (click)="onSave()">
+          <mat-spinner *ngIf="isSaving" diameter="18" style="display: inline-block; margin-right: 5px;"></mat-spinner>
+          <mat-icon *ngIf="!isSaving">save</mat-icon>
+          {{ isSaving ? 'Menyimpan...' : 'Simpan Perubahan' }}
+        </button>
+      </div>
+    </div>
+  </form>
+</div>

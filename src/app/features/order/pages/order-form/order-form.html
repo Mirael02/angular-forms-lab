@@ -1,1 +1,101 @@
-<p>order-form works!</p>
+<div class="order-container" style="padding: 20px; max-width: 900px; margin: 0 auto;">
+  <div class="order-header" style="display: flex; justify-content: space-between; align-items: center;">
+    <h2>Form Pesanan Dinamis</h2>
+    <span *ngIf="lastSaved" style="color: #4caf50; font-size: 14px; display: flex; align-items: center; gap: 5px;">
+      <mat-icon style="font-size: 18px; width: 18px; height: 18px;">cloud_done</mat-icon>
+      Tersimpan {{ lastSaved | date:'HH:mm:ss' }}
+    </span>
+  </div>
+
+  <form [formGroup]="orderForm">
+    <mat-card class="section-card" style="margin-bottom: 20px;">
+      <mat-card-title style="padding: 16px;">Data Pelanggan</mat-card-title>
+      <mat-card-content>
+        <div style="display: flex; gap: 15px; flex-wrap: wrap;">
+          <mat-form-field appearance="outline" style="flex: 1; min-width: 250px;">
+            <mat-label>Nama Pelanggan</mat-label>
+            <input matInput formControlName="customerName">
+            <mat-error>Nama wajib diisi</mat-error>
+          </mat-form-field>
+
+          <mat-form-field appearance="outline" style="flex: 1; min-width: 250px;">
+            <mat-label>No. HP</mat-label>
+            <input matInput formControlName="customerPhone">
+            <mat-error *ngIf="orderForm.get('customerPhone')?.errors?.['required']">No. HP wajib diisi</mat-error>
+            <mat-error *ngIf="orderForm.get('customerPhone')?.errors?.['pattern']">Format tidak valid (08xxxxxxxxxx)</mat-error>
+          </mat-form-field>
+        </div>
+
+        <mat-form-field appearance="outline" style="width: 100%;">
+          <mat-label>Alamat Pengiriman</mat-label>
+          <textarea matInput formControlName="deliveryAddress" rows="2"></textarea>
+          <mat-error>Alamat wajib diisi</mat-error>
+        </mat-form-field>
+      </mat-card-content>
+    </mat-card>
+
+    <mat-card class="section-card" style="margin-bottom: 20px;">
+      <mat-card-title style="padding: 16px; display: flex; justify-content: space-between;">
+        <span>Item Pesanan</span>
+        <span style="font-size: 14px; color: gray; font-weight: normal;">({{ items.length }} item)</span>
+      </mat-card-title>
+
+      <mat-card-content>
+        <div formArrayName="items">
+          <div *ngFor="let item of itemGroups; let i = index" [formGroupName]="i" 
+               style="display: flex; gap: 10px; align-items: center; margin-bottom: 15px; border-bottom: 1px solid #eee; padding-bottom: 10px; flex-wrap: wrap;">
+            
+            <span style="font-weight: bold; width: 25px;">{{ i+1 }}.</span>
+
+            <mat-form-field appearance="outline" style="flex: 3; min-width: 200px;">
+              <mat-label>Pencarian Produk</mat-label>
+              <input matInput formControlName="productSearch" [placeholder]="item.get('productName')?.value || 'Ketik nama produk...'" [matAutocomplete]="auto">
+              <mat-autocomplete #auto="matAutocomplete">
+                <mat-option *ngFor="let p of searchResults[i]" [value]="p.title" (onSelectionChange)="selectProduct(i, p)">
+                  {{ p.title }} - {{ p.price * 15500 | currency:'IDR':'symbol':'1.0-0' }}
+                </mat-option>
+              </mat-autocomplete>
+            </mat-form-field>
+
+            <mat-form-field appearance="outline" style="flex: 2; min-width: 120px;">
+              <mat-label>Harga Satuan</mat-label>
+              <input matInput formControlName="unitPrice" type="number" readonly>
+              <span matTextPrefix>Rp&nbsp;</span>
+            </mat-form-field>
+
+            <mat-form-field appearance="outline" style="flex: 1; min-width: 80px;">
+              <mat-label>Qty</mat-label>
+              <input matInput formControlName="quantity" type="number" min="1">
+            </mat-form-field>
+
+            <mat-form-field appearance="outline" style="flex: 1; min-width: 80px;">
+              <mat-label>Diskon</mat-label>
+              <input matInput formControlName="discount" type="number" min="0" max="100">
+              <span matTextSuffix>%</span>
+            </mat-form-field>
+
+            <div style="flex: 2; text-align: right; padding: 0 10px; min-width: 100px;">
+              <div style="font-size: 12px; color: gray;">Subtotal</div>
+              <strong>{{ getRowSubtotal(i) | currency:'IDR':'symbol':'1.0-0' }}</strong>
+            </div>
+
+            <button mat-icon-button color="warn" type="button" (click)="removeItem(i)" [disabled]="items.length === 1" matTooltip="Hapus baris ini">
+              <mat-icon>delete_outline</mat-icon>
+            </button>
+          </div>
+        </div>
+
+        <button mat-stroked-button color="primary" type="button" (click)="addItem()" style="margin-top: 10px;">
+          <mat-icon>add</mat-icon> Tambah Baris Item
+        </button>
+      </mat-card-content>
+    </mat-card>
+
+    <app-order-summary [total]="grandTotal$"></app-order-summary>
+
+    <div style="display: flex; justify-content: flex-end; gap: 10px; margin-top: 20px; padding-bottom: 40px;">
+      <button mat-button type="button" (click)="clearDraft()">Batal / Bersihkan Form</button>
+      <button mat-raised-button color="primary" type="button" [disabled]="orderForm.invalid" (click)="onSubmit()">Buat Pesanan</button>
+    </div>
+  </form>
+</div>
