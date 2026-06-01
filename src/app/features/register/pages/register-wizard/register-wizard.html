@@ -1,0 +1,23 @@
+<div class="wizard-container">
+  <div class="wizard-header">
+    <h2>Daftar Akun Baru</h2>
+    <mat-progress-bar mode="determinate" [value]="(currentStep / 2) * 100"></mat-progress-bar>
+    <div class="step-labels">
+      <span [class.active]="currentStep === 0">1. Data Pribadi</span>
+      <span [class.active]="currentStep === 1">2. Akun</span>
+      <span [class.active]="currentStep === 2">3. Review</span>
+    </div>
+  </div>
+
+  <div *ngIf="currentStep === 0">
+    <app-step-personal [form]="personalForm" (next)="nextStep()"></app-step-personal>
+  </div>
+
+  <div *ngIf="currentStep === 1">
+    <app-step-account [form]="accountForm" (next)="nextStep()" (prev)="prevStep()"></app-step-account>
+  </div>
+
+  <div *ngIf="currentStep === 2">
+    <app-step-review [allValues]="allValues" [isSubmitting]="isSubmitting" (prev)="prevStep()" (submit)="onSubmit()"></app-step-review>
+  </div>
+</div>

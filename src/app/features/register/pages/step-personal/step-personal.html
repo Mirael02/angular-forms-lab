@@ -1,0 +1,58 @@
+<form [formGroup]="form" (ngSubmit)="next.emit()">
+  <h3>Data Pribadi</h3>
+  
+  <div class="row-2col">
+    <mat-form-field appearance="outline">
+      <mat-label>Nama Depan</mat-label>
+      <input matInput formControlName="firstName" placeholder="Budi">
+      <mat-error *ngIf="form.get('firstName')?.errors?.['required']">Nama depan wajib diisi</mat-error>
+      <mat-error *ngIf="form.get('firstName')?.errors?.['minlength']">Minimal 2 karakter</mat-error>
+      <mat-error *ngIf="form.get('firstName')?.errors?.['whitespaceOnly']">Tidak boleh hanya spasi</mat-error>
+    </mat-form-field>
+
+    <mat-form-field appearance="outline">
+      <mat-label>Nama Belakang</mat-label>
+      <input matInput formControlName="lastName" placeholder="Santoso">
+      <mat-error *ngIf="form.get('lastName')?.errors?.['required']">Nama belakang wajib diisi</mat-error>
+    </mat-form-field>
+  </div>
+
+  <mat-form-field appearance="outline" class="full-width">
+    <mat-label>NIK (16 digit)</mat-label>
+    <input matInput formControlName="nik" maxlength="16" placeholder="3509xxxxxxxxxxxx">
+    <mat-hint>Nomor Induk Kependudukan 16 digit</mat-hint>
+    <mat-error *ngIf="form.get('nik')?.errors?.['required']">NIK wajib diisi</mat-error>
+    <mat-error *ngIf="form.get('nik')?.errors?.['invalidNik']">NIK harus 16 digit angka</mat-error>
+  </mat-form-field>
+
+  <div class="row-2col">
+    <mat-form-field appearance="outline">
+      <mat-label>Jenis Kelamin</mat-label>
+      <mat-select formControlName="gender">
+        <mat-option value="L">Laki-laki</mat-option>
+        <mat-option value="P">Perempuan</mat-option>
+      </mat-select>
+      <mat-error>Pilih jenis kelamin</mat-error>
+    </mat-form-field>
+
+    <mat-form-field appearance="outline">
+      <mat-label>Tanggal Lahir</mat-label>
+      <input matInput formControlName="birthDate" type="date">
+      <mat-error>Tanggal lahir wajib diisi</mat-error>
+    </mat-form-field>
+  </div>
+
+  <mat-form-field appearance="outline" class="full-width">
+    <mat-label>No. HP</mat-label>
+    <input matInput formControlName="phone" placeholder="08xxxxxxxxxx">
+    <mat-hint>Format: 08xxxxxxxxxx (10-13 digit)</mat-hint>
+    <mat-error *ngIf="form.get('phone')?.errors?.['required']">No. HP wajib diisi</mat-error>
+    <mat-error *ngIf="form.get('phone')?.errors?.['pattern']">Format tidak valid (mulai 08, 10-13 digit)</mat-error>
+  </mat-form-field>
+
+  <div class="btn-row">
+    <button mat-raised-button color="primary" type="submit">
+      Selanjutnya <mat-icon>arrow_forward</mat-icon>
+    </button>
+  </div>
+</form>

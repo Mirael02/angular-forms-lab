@@ -1,0 +1,57 @@
+<div class="review-container">
+  <h3>Konfirmasi Data Anda</h3>
+  
+  <mat-card class="review-section" style="margin-bottom: 15px;">
+    <mat-card-title>Data Pribadi</mat-card-title>
+    <mat-card-content>
+      <div class="review-row">
+        <span class="label">Nama Lengkap: </span>
+        <span>{{ allValues?.firstName }} {{ allValues?.lastName }}</span>
+      </div>
+      <div class="review-row">
+        <span class="label">NIK: </span>
+        <span>{{ allValues?.nik }}</span>
+      </div>
+      <div class="review-row">
+        <span class="label">Jenis Kelamin: </span>
+        <span>{{ allValues?.gender === 'L' ? 'Laki-laki' : 'Perempuan' }}</span>
+      </div>
+      <div class="review-row">
+        <span class="label">Tanggal Lahir: </span>
+        <span>{{ allValues?.birthDate | date: 'dd MMMM yyyy' }}</span>
+      </div>
+      <div class="review-row">
+        <span class="label">No. HP: </span>
+        <span>{{ allValues?.phone }}</span>
+      </div>
+    </mat-card-content>
+  </mat-card>
+
+  <mat-card class="review-section" style="margin-bottom: 20px;">
+    <mat-card-title>Data Akun</mat-card-title>
+    <mat-card-content>
+      <div class="review-row">
+        <span class="label">Username: </span>
+        <span>{{ allValues?.username }}</span>
+      </div>
+      <div class="review-row">
+        <span class="label">Email: </span>
+        <span>{{ allValues?.email }}</span>
+      </div>
+      <div class="review-row">
+        <span class="label">Password: </span>
+        <span>********</span>
+      </div>
+    </mat-card-content>
+  </mat-card>
+
+  <div class="btn-row" style="display: flex; gap: 10px;">
+    <button mat-button type="button" (click)="prev.emit()">
+      <mat-icon>arrow_back</mat-icon> Edit Data
+    </button>
+    <button mat-raised-button color="primary" [disabled]="isSubmitting" (click)="submit.emit()">
+      {{ isSubmitting ? 'Memproses...' : 'Daftar Sekarang' }}
+      <mat-spinner *ngIf="isSubmitting" diameter="20" style="display: inline-block; margin-left: 5px;"></mat-spinner>
+    </button>
+  </div>
+</div>
