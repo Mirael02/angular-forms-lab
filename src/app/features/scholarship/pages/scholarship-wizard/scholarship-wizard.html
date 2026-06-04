@@ -1,0 +1,134 @@
+<div style="max-width: 800px; margin: 20px auto; padding: 20px;">
+  <h2>Pengajuan Beasiswa</h2>
+  
+  <div style="margin-bottom: 20px; display: flex; justify-content: space-between; align-items: center;">
+    <mat-progress-bar mode="determinate" [value]="(currentStep / 2) * 100" style="flex: 1; margin-right: 15px;"></mat-progress-bar>
+    <span *ngIf="lastSaved" style="font-size: 12px; color: gray;">Tersimpan {{ lastSaved | date:'HH:mm' }}</span>
+  </div>
+
+  <form [formGroup]="scholarshipForm">
+    <!-- STEP 1: Data Mahasiswa -->
+    <div *ngIf="currentStep === 0" formGroupName="step1">
+      <mat-card>
+        <mat-card-title style="padding: 16px;">Data Mahasiswa</mat-card-title>
+        <mat-card-content style="display: flex; flex-direction: column; gap: 15px;">
+          <mat-form-field appearance="outline">
+            <mat-label>Nama Lengkap</mat-label>
+            <input matInput formControlName="namaLengkap">
+          </mat-form-field>
+
+          <mat-form-field appearance="outline">
+            <mat-label>NIK</mat-label>
+            <input matInput formControlName="nik" maxlength="16">
+            <mat-error *ngIf="scholarshipForm.get('step1.nik')?.hasError('invalidNik')">Harus 16 digit angka</mat-error>
+          </mat-form-field>
+
+          <mat-form-field appearance="outline">
+            <mat-label>NIM</mat-label>
+            <input matInput formControlName="nim">
+            <mat-error *ngIf="scholarshipForm.get('step1.nim')?.hasError('nimRegistered')">NIM sudah mendaftar</mat-error>
+          </mat-form-field>
+
+          <div style="display: flex; gap: 15px;">
+            <mat-form-field appearance="outline" style="flex: 1;">
+              <mat-label>IPK</mat-label>
+              <input matInput formControlName="ipk" type="number" step="0.01">
+              <mat-error *ngIf="scholarshipForm.get('step1.ipk')?.hasError('min')">IPK minimal 3.0</mat-error>
+            </mat-form-field>
+
+            <mat-form-field appearance="outline" style="flex: 1;">
+              <mat-label>Semester</mat-label>
+              <input matInput formControlName="semester" type="number">
+              <mat-error *ngIf="scholarshipForm.get('step1.semester')?.errors">Semester 3 hingga 8</mat-error>
+            </mat-form-field>
+          </div>
+        </mat-card-content>
+      </mat-card>
+    </div>
+
+    <!-- STEP 2: Prestasi & Dokumen (FormArray) -->
+    <div *ngIf="currentStep === 1" formGroupName="step2">
+      <mat-card>
+        <mat-card-title style="padding: 16px; display: flex; justify-content: space-between;">
+          Daftar Prestasi
+          <span style="font-size: 14px;">({{ prestasiArray.length }} / 10)</span>
+        </mat-card-title>
+        <mat-card-content formArrayName="prestasi">
+          <div *ngFor="let p of prestasiArray.controls; let i = index" [formGroupName]="i" style="border: 1px solid #ccc; padding: 15px; border-radius: 8px; margin-bottom: 15px;">
+            <div style="display: flex; justify-content: space-between; margin-bottom: 10px;">
+              <strong>Prestasi #{{ i + 1 }}</strong>
+              <button mat-icon-button color="warn" (click)="removePrestasi(i)" [disabled]="prestasiArray.length === 1"><mat-icon>delete</mat-icon></button>
+            </div>
+            
+            <mat-form-field appearance="outline" style="width: 100%;">
+              <mat-label>Nama Kegiatan/Prestasi</mat-label>
+              <input matInput formControlName="namaPrestasi">
+            </mat-form-field>
+
+            <div style="display: flex; gap: 15px;">
+              <mat-form-field appearance="outline" style="flex: 1;">
+                <mat-label>Tahun</mat-label>
+                <input matInput formControlName="tahun" maxlength="4">
+                <mat-error *ngIf="p.get('tahun')?.hasError('futureYear')">Tahun tidak valid</mat-error>
+              </mat-form-field>
+
+              <mat-form-field appearance="outline" style="flex: 1;">
+                <mat-label>Tingkat</mat-label>
+                <mat-select formControlName="tingkat">
+                  <mat-option value="Lokal">Lokal</mat-option>
+                  <mat-option value="Nasional">Nasional</mat-option>
+                  <mat-option value="Internasional">Internasional</mat-option>
+                </mat-select>
+              </mat-form-field>
+            </div>
+
+            <mat-form-field appearance="outline" style="width: 100%;">
+              <mat-label>URL Bukti (Sertifikat/Dokumen)</mat-label>
+              <input matInput formControlName="urlBukti" placeholder="https://...">
+            </mat-form-field>
+          </div>
+
+          <button mat-stroked-button color="primary" type="button" (click)="addPrestasi()" [disabled]="prestasiArray.length >= 10">
+            <mat-icon>add</mat-icon> Tambah Prestasi
+          </button>
+        </mat-card-content>
+      </mat-card>
+    </div>
+
+    <!-- STEP 3: Essay & Review -->
+    <div *ngIf="currentStep === 2" formGroupName="step3">
+      <mat-card style="margin-bottom: 20px;">
+        <mat-card-title style="padding: 16px;">Essay Pengajuan</mat-card-title>
+        <mat-card-content>
+          <mat-form-field appearance="outline" style="width: 100%;">
+            <mat-label>Mengapa Anda layak mendapatkan beasiswa ini?</mat-label>
+            <textarea matInput formControlName="essay" rows="5"></textarea>
+            <mat-hint align="end">{{ scholarshipForm.get('step3.essay')?.value?.length || 0 }} karakter (Min. 100)</mat-hint>
+            <mat-error *ngIf="scholarshipForm.get('step3.essay')?.hasError('minlength')">Minimal 100 karakter</mat-error>
+          </mat-form-field>
+        </mat-card-content>
+      </mat-card>
+
+      <!-- Review Section -->
+      <mat-card>
+        <mat-card-title style="padding: 16px;">Review Data</mat-card-title>
+        <mat-card-content style="line-height: 1.8;">
+          <strong>Nama:</strong> {{ scholarshipForm.value.step1.namaLengkap }} <br>
+          <strong>NIM / IPK:</strong> {{ scholarshipForm.value.step1.nim }} / {{ scholarshipForm.value.step1.ipk }} <br>
+          <strong>Jumlah Prestasi:</strong> {{ scholarshipForm.value.step2.prestasi.length }} data terinput.
+        </mat-card-content>
+      </mat-card>
+    </div>
+
+    <!-- Action Buttons -->
+    <div style="margin-top: 20px; display: flex; justify-content: space-between;">
+      <button mat-button type="button" (click)="prevStep()" [disabled]="currentStep === 0 || isSubmitting">Kembali</button>
+      
+      <button *ngIf="currentStep < 2" mat-raised-button color="primary" type="button" (click)="nextStep()">Selanjutnya</button>
+      
+      <button *ngIf="currentStep === 2" mat-raised-button color="primary" type="button" [disabled]="scholarshipForm.invalid || isSubmitting || scholarshipForm.pristine" (click)="onSubmit()">
+        {{ isSubmitting ? 'Memproses...' : 'Kirim Pengajuan' }}
+      </button>
+    </div>
+  </form>
+</div>

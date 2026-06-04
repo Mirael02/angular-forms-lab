@@ -1,4 +1,5 @@
 import { Routes } from '@angular/router';
+import { WizardDeactivateGuard } from './core/guards/wizard-deactivate';
 
 export const routes: Routes = [
   {
@@ -13,5 +14,10 @@ export const routes: Routes = [
     path: 'account', 
     loadComponent: () => import('./features/account/pages/account-settings/account-settings').then(c => c.AccountSettings) 
   },
-  { path: '', redirectTo: 'account', pathMatch: 'full' }  
+  {
+    path: 'scholarship',
+    loadComponent: () => import('./features/scholarship/pages/scholarship-wizard/scholarship-wizard').then(c => c.ScholarshipWizard),
+    canDeactivate:  [WizardDeactivateGuard]
+  },
+  { path: '', redirectTo: 'register', pathMatch: 'full' }  
 ];

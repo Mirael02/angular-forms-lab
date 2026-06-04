@@ -44,3 +44,12 @@ export function noWhitespaceValidator(): ValidatorFn {
     return ctrl.value.trim().length === 0 ? { whitespaceOnly: true } : null;
   };
 }
+
+export function noFutureYearValidator(): ValidatorFn {
+  return (ctrl: AbstractControl): ValidationErrors | null => {
+    if (!ctrl.value) return null;
+    const year = Number(ctrl.value);
+    const currentYear = new Date().getFullYear();
+    return year > currentYear ? { futureYear: true } : null;
+  };
+}
