@@ -1,2 +1,29 @@
-Nothing should be ignored based on the provided file changes, as they only include source code files (.html, .scss, .ts) without any build artifacts, dependencies, or temporary files.
-node_modules
+# Build outputs
+dist/
+dist-ssr/
+
+# Angular cache
+.angular/
+
+# IDE / Editor
+.vscode/launch.json
+.vscode/tasks.json
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Logs
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# Testing
+coverage/
+
+# Misc
+*.tsbuildinfo
+
+# Dependencies
+node_modules/
