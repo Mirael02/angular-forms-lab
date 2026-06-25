@@ -1,57 +1,104 @@
 <div class="review-container">
-  <h3>Konfirmasi Data Anda</h3>
+  <div class="review-header">
+    <h1 class="review-title">
+      <mat-icon>fact_check</mat-icon>
+      Konfirmasi Data Anda
+    </h1>
+    <p class="review-subtitle">Pastikan semua informasi sudah benar sebelum melanjutkan</p>
+  </div>
   
-  <mat-card class="review-section" style="margin-bottom: 15px;">
-    <mat-card-title>Data Pribadi</mat-card-title>
+  <!-- Personal Data Card -->
+  <mat-card class="review-section" appearance="outlined">
+    <mat-card-header>
+      <mat-icon mat-card-avatar>badge</mat-icon>
+      <mat-card-title>Data Pribadi</mat-card-title>
+    </mat-card-header>
     <mat-card-content>
-      <div class="review-row">
-        <span class="label">Nama Lengkap: </span>
-        <span>{{ allValues?.firstName }} {{ allValues?.lastName }}</span>
-      </div>
-      <div class="review-row">
-        <span class="label">NIK: </span>
-        <span>{{ allValues?.nik }}</span>
-      </div>
-      <div class="review-row">
-        <span class="label">Jenis Kelamin: </span>
-        <span>{{ allValues?.gender === 'L' ? 'Laki-laki' : 'Perempuan' }}</span>
-      </div>
-      <div class="review-row">
-        <span class="label">Tanggal Lahir: </span>
-        <span>{{ allValues?.birthDate | date: 'dd MMMM yyyy' }}</span>
-      </div>
-      <div class="review-row">
-        <span class="label">No. HP: </span>
-        <span>{{ allValues?.phone }}</span>
+      <div class="review-grid">
+        <div class="review-row">
+          <div class="review-label">
+            <mat-icon>person_outline</mat-icon>
+            Nama Lengkap
+          </div>
+          <div class="review-value">{{ allValues?.firstName }} {{ allValues?.lastName }}</div>
+        </div>
+        <div class="review-row">
+          <div class="review-label">
+            <mat-icon>fingerprint</mat-icon>
+            NIK
+          </div>
+          <div class="review-value">{{ allValues?.nik }}</div>
+        </div>
+        <div class="review-row">
+          <div class="review-label">
+            <mat-icon>transgender</mat-icon>
+            Jenis Kelamin
+          </div>
+          <div class="review-value">{{ allValues?.gender === 'L' ? 'Laki-laki' : 'Perempuan' }}</div>
+        </div>
+        <div class="review-row">
+          <div class="review-label">
+            <mat-icon>calendar_today</mat-icon>
+            Tanggal Lahir
+          </div>
+          <div class="review-value">{{ allValues?.birthDate | date: 'dd MMMM yyyy' }}</div>
+        </div>
+        <div class="review-row">
+          <div class="review-label">
+            <mat-icon>phone</mat-icon>
+            No. HP
+          </div>
+          <div class="review-value">{{ allValues?.phone }}</div>
+        </div>
       </div>
     </mat-card-content>
   </mat-card>
 
-  <mat-card class="review-section" style="margin-bottom: 20px;">
-    <mat-card-title>Data Akun</mat-card-title>
+  <!-- Account Data Card -->
+  <mat-card class="review-section" appearance="outlined">
+    <mat-card-header>
+      <mat-icon mat-card-avatar>security</mat-icon>
+      <mat-card-title>Data Akun</mat-card-title>
+    </mat-card-header>
     <mat-card-content>
-      <div class="review-row">
-        <span class="label">Username: </span>
-        <span>{{ allValues?.username }}</span>
-      </div>
-      <div class="review-row">
-        <span class="label">Email: </span>
-        <span>{{ allValues?.email }}</span>
-      </div>
-      <div class="review-row">
-        <span class="label">Password: </span>
-        <span>********</span>
+      <div class="review-grid">
+        <div class="review-row">
+          <div class="review-label">
+            <mat-icon>person</mat-icon>
+            Username
+          </div>
+          <div class="review-value">{{ allValues?.username }}</div>
+        </div>
+        <div class="review-row">
+          <div class="review-label">
+            <mat-icon>email</mat-icon>
+            Email
+          </div>
+          <div class="review-value">{{ allValues?.email }}</div>
+        </div>
+        <div class="review-row">
+          <div class="review-label">
+            <mat-icon>lock</mat-icon>
+            Password
+          </div>
+          <div class="review-value">
+            <span class="password-dots">••••••••</span>
+          </div>
+        </div>
       </div>
     </mat-card-content>
   </mat-card>
 
-  <div class="btn-row" style="display: flex; gap: 10px;">
-    <button mat-button type="button" (click)="prev.emit()">
-      <mat-icon>arrow_back</mat-icon> Edit Data
+  <!-- Action Bar -->
+  <div class="action-bar">
+    <button mat-button type="button" (click)="prev.emit()" class="edit-btn">
+      <mat-icon>arrow_back</mat-icon>
+      Edit Data
     </button>
-    <button mat-raised-button color="primary" [disabled]="isSubmitting" (click)="submit.emit()">
+    <button mat-raised-button color="primary" [disabled]="isSubmitting" (click)="submit.emit()" class="submit-btn">
+      <mat-icon>send</mat-icon>
       {{ isSubmitting ? 'Memproses...' : 'Daftar Sekarang' }}
-      <mat-spinner *ngIf="isSubmitting" diameter="20" style="display: inline-block; margin-left: 5px;"></mat-spinner>
+      <mat-progress-spinner *ngIf="isSubmitting" diameter="20" mode="indeterminate"></mat-progress-spinner>
     </button>
   </div>
 </div>

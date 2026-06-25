@@ -1,62 +1,124 @@
-<form [formGroup]="form" (ngSubmit)="next.emit()">
-  <h3>Buat Akun</h3>
-
-  <mat-form-field appearance="outline" class="full-width">
-    <mat-label>Username</mat-label>
-    <input matInput formControlName="username" placeholder="min. 3 karakter, hanya huruf/angka/_">
-    <mat-spinner *ngIf="form.get('username')?.pending" matSuffix diameter="20"></mat-spinner>
-    <mat-icon matSuffix color="primary" *ngIf="form.get('username')?.valid">check_circle</mat-icon>
-    
-    <mat-error *ngIf="form.get('username')?.errors?.['required']">Username wajib diisi</mat-error>
-    <mat-error *ngIf="form.get('username')?.errors?.['minlength']">Minimal 3 karakter</mat-error>
-    <mat-error *ngIf="form.get('username')?.errors?.['pattern']">Hanya huruf, angka, dan underscore (_)</mat-error>
-    <mat-error *ngIf="form.get('username')?.errors?.['usernameTaken']">Username sudah dipakai, pilih yang lain</mat-error>
-  </mat-form-field>
-
-  <mat-form-field appearance="outline" class="full-width">
-    <mat-label>Email</mat-label>
-    <input matInput formControlName="email" type="email" placeholder="budi@example.com">
-    <mat-error *ngIf="form.get('email')?.errors?.['required']">Email wajib diisi</mat-error>
-    <mat-error *ngIf="form.get('email')?.errors?.['email']">Format email tidak valid</mat-error>
-  </mat-form-field>
-
-  <mat-form-field appearance="outline" class="full-width">
-    <mat-label>Password</mat-label>
-    <input matInput formControlName="password" [type]="showPwd ? 'text' : 'password'">
-    <button mat-icon-button matSuffix type="button" (click)="showPwd = !showPwd">
-      <mat-icon>{{ showPwd ? 'visibility_off' : 'visibility' }}</mat-icon>
-    </button>
-    
-    <ng-container *ngIf="form.get('password')?.errors as e">
-      <mat-error *ngIf="e['required']">Password wajib diisi</mat-error>
-      <mat-error *ngIf="e['tooShort']">Minimal 8 karakter</mat-error>
-      <mat-error *ngIf="e['noUppercase']">Butuh minimal 1 huruf kapital</mat-error>
-      <mat-error *ngIf="e['noNumber']">Butuh minimal 1 angka</mat-error>
-      <mat-error *ngIf="e['noSymbol']">Butuh 1 simbol (!@#$%^&*)</mat-error>
-    </ng-container>
-  </mat-form-field>
-
-  <mat-form-field appearance="outline" class="full-width">
-    <mat-label>Konfirmasi Password</mat-label>
-    <input matInput formControlName="confirmPassword" type="password">
-    <mat-error *ngIf="form.errors?.['passwordMismatch'] && form.get('confirmPassword')?.touched">
-      Password tidak cocok
-    </mat-error>
-  </mat-form-field>
-
-  <mat-checkbox formControlName="agreeTerms">
-    Saya setuju dengan <a href="#">Syarat & Ketentuan</a>
-  </mat-checkbox>
-  <div *ngIf="form.get('agreeTerms')?.invalid && form.get('agreeTerms')?.touched" style="font-size: 12px; color: #f44336; margin-top: 5px;">
-    Anda harus menyetujui syarat & ketentuan
+<div class="form-container">
+  <div class="form-header">
+    <h1 class="form-title">
+      <mat-icon>security</mat-icon>
+      Buat Akun
+    </h1>
+    <p class="form-subtitle">Lengkapi informasi akun untuk mengamankan pendaftaran Anda</p>
   </div>
+  
+  <form [formGroup]="form" (ngSubmit)="next.emit()" class="form-content">
+    <!-- Account Information Card -->
+    <mat-card class="section-card" appearance="outlined">
+      <mat-card-header>
+        <mat-icon mat-card-avatar>lock</mat-icon>
+        <mat-card-title>Kredensial Akun</mat-card-title>
+      </mat-card-header>
+      <mat-card-content>
+        <mat-form-field appearance="outline" class="form-field-full">
+          <mat-label>Username</mat-label>
+          <input matInput formControlName="username" placeholder="min. 3 karakter, hanya huruf/angka/_">
+          <mat-icon matPrefix>person</mat-icon>
+          <mat-spinner *ngIf="form.get('username')?.pending" matSuffix diameter="20"></mat-spinner>
+          <mat-icon matSuffix color="primary" *ngIf="form.get('username')?.valid && !form.get('username')?.pending">check_circle</mat-icon>
+          
+          <mat-error *ngIf="form.get('username')?.errors?.['required']">
+            <mat-icon>warning</mat-icon>
+            Username wajib diisi
+          </mat-error>
+          <mat-error *ngIf="form.get('username')?.errors?.['minlength']">
+            <mat-icon>warning</mat-icon>
+            Minimal 3 karakter
+          </mat-error>
+          <mat-error *ngIf="form.get('username')?.errors?.['pattern']">
+            <mat-icon>error</mat-icon>
+            Hanya huruf, angka, dan underscore (_)
+          </mat-error>
+          <mat-error *ngIf="form.get('username')?.errors?.['usernameTaken']">
+            <mat-icon>error</mat-icon>
+            Username sudah dipakai, pilih yang lain
+          </mat-error>
+        </mat-form-field>
+        
+        <mat-form-field appearance="outline" class="form-field-full">
+          <mat-label>Email</mat-label>
+          <input matInput formControlName="email" type="email" placeholder="budi@example.com">
+          <mat-icon matPrefix>email</mat-icon>
+          <mat-error *ngIf="form.get('email')?.errors?.['required']">
+            <mat-icon>warning</mat-icon>
+            Email wajib diisi
+          </mat-error>
+          <mat-error *ngIf="form.get('email')?.errors?.['email']">
+            <mat-icon>error</mat-icon>
+            Format email tidak valid
+          </mat-error>
+        </mat-form-field>
+        
+        <mat-form-field appearance="outline" class="form-field-full">
+          <mat-label>Password</mat-label>
+          <input matInput formControlName="password" [type]="showPwd ? 'text' : 'password'">
+          <mat-icon matPrefix>lock</mat-icon>
+          <button mat-icon-button matSuffix type="button" (click)="showPwd = !showPwd">
+            <mat-icon>{{ showPwd ? 'visibility_off' : 'visibility' }}</mat-icon>
+          </button>
+          
+          <ng-container *ngIf="form.get('password')?.errors as e">
+            <mat-error *ngIf="e['required']">
+              <mat-icon>warning</mat-icon>
+              Password wajib diisi
+            </mat-error>
+            <mat-error *ngIf="e['tooShort']">
+              <mat-icon>error</mat-icon>
+              Minimal 8 karakter
+            </mat-error>
+            <mat-error *ngIf="e['noUppercase']">
+              <mat-icon>error</mat-icon>
+              Butuh minimal 1 huruf kapital
+            </mat-error>
+            <mat-error *ngIf="e['noNumber']">
+              <mat-icon>error</mat-icon>
+              Butuh minimal 1 angka
+            </mat-error>
+            <mat-error *ngIf="e['noSymbol']">
+              <mat-icon>error</mat-icon>
+              Butuh 1 simbol (!@#$%^&*)
+            </mat-error>
+          </ng-container>
+        </mat-form-field>
 
-  <div class="btn-row" style="display: flex; gap: 10px; margin-top: 20px;">
-    <button mat-button type="button" (click)="prev.emit()">
-      <mat-icon>arrow_back</mat-icon> Kembali
-    </button>
-    <button mat-raised-button color="primary" type="submit" [disabled]="form.invalid || form.pending">
-      Selanjutnya <mat-icon>arrow_forward</mat-icon>
-    </button>
-  </div>
-</form>
+        <mat-form-field appearance="outline" class="form-field-full">
+          <mat-label>Konfirmasi Password</mat-label>
+          <input matInput formControlName="confirmPassword" type="password">
+          <mat-icon matPrefix>lock_reset</mat-icon>
+          <mat-error *ngIf="form.errors?.['passwordMismatch'] && form.get('confirmPassword')?.touched">
+            <mat-icon>error</mat-icon>
+            Password tidak cocok
+          </mat-error>
+        </mat-form-field>
+
+        <div class="checkbox-section">
+          <mat-checkbox formControlName="agreeTerms" class="terms-checkbox">
+            <span class="checkbox-label">Saya setuju dengan</span>
+            <a href="#" class="terms-link">Syarat & Ketentuan</a>
+          </mat-checkbox>
+          <div *ngIf="form.get('agreeTerms')?.invalid && form.get('agreeTerms')?.touched" class="checkbox-error">
+            <mat-icon>warning</mat-icon>
+            Anda harus menyetujui syarat & ketentuan
+          </div>
+        </div>
+      </mat-card-content>
+    </mat-card>
+
+    <!-- Action Bar -->
+    <div class="action-bar">
+      <button mat-button type="button" (click)="prev.emit()" class="back-btn">
+        <mat-icon>arrow_back</mat-icon>
+        Kembali
+      </button>
+      <button mat-raised-button color="primary" type="submit" [disabled]="form.invalid || form.pending" class="next-btn">
+        Selanjutnya
+        <mat-icon>arrow_forward</mat-icon>
+      </button>
+    </div>
+  </form>
+</div>
