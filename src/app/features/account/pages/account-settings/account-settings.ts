@@ -1,9 +1,9 @@
-import { Component, OnInit, inject, DestroyRef } from '@angular/core';
+import { Component, OnInit, AfterViewInit, inject, DestroyRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormBuilder, FormGroup, Validators, AbstractControl, ReactiveFormsModule } from '@angular/forms';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { Observable, timer, of } from 'rxjs';
-import { switchMap, map, catchError, startWith } from 'rxjs/operators';
+import { switchMap, map, catchError, startWith, distinctUntilChanged } from 'rxjs/operators';
 
 import { AccountService, UserProfile } from '../../services/account';
 import { noWhitespaceValidator } from '../../../../core/validators/password.validator';
@@ -31,9 +31,10 @@ import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
     MatProgressSpinnerModule
   ],
   templateUrl: './account-settings.html',
-  styleUrls: ['./account-settings.scss']
+  styleUrls: ['./account-settings.scss'],
+  host: { 'ngSkipHydration': 'true' }
 })
-export class AccountSettings implements OnInit {
+export class AccountSettings implements OnInit, AfterViewInit {
   private fb = inject(FormBuilder);
   private accountSvc = inject(AccountService);
   private destroyRef = inject(DestroyRef);
@@ -45,10 +46,21 @@ export class AccountSettings implements OnInit {
   saveSuccess = false;
 
   private currentEmail = '';
+  private initialized = false;
 
   ngOnInit() {
     this.buildForm();
+  }
+
+  ngAfterViewInit() {
+    this.markInitialized();
+    this.setupConditionalFields();
+    this.setupSaveButton();
     this.loadProfile();
+  }
+
+  private markInitialized() {
+    this.initialized = true;
   }
 
   buildForm() {
@@ -63,7 +75,7 @@ export class AccountSettings implements OnInit {
         npwp: [''],
         businessSector: ['']
       })
-    });
+    }, { updateOn: 'blur' });
   }
 
   get accountType() { return this.settingsForm.get('accountType'); }
@@ -76,26 +88,20 @@ export class AccountSettings implements OnInit {
     this.accountSvc.getProfile().subscribe({
       next: (profile) => {
         this.currentEmail = profile.email;
-        
+
         this.settingsForm.patchValue({
           accountType: profile.accountType,
           fullName: profile.fullName,
           email: profile.email,
           phone: profile.phone,
-          bio: profile.bio || ''
+          bio: profile.bio || '',
+          business: {
+            companyName: profile.companyName || '',
+            npwp: profile.npwp || '',
+            businessSector: profile.businessSector || ''
+          }
         });
 
-        if (profile.companyName) {
-          this.businessGrp.patchValue({
-            companyName: profile.companyName,
-            npwp: profile.npwp,
-            businessSector: profile.businessSector || ''
-          });
-        }
-
-        this.setupConditionalFields();
-        this.setupSaveButton();
-        
         this.settingsForm.markAsPristine();
         this.settingsForm.markAsUntouched();
         
@@ -153,6 +159,7 @@ export class AccountSettings implements OnInit {
   setupSaveButton() {
     this.settingsForm.statusChanges.pipe(
       startWith(this.settingsForm.status),
+      distinctUntilChanged(),
       takeUntilDestroyed(this.destroyRef)
     ).subscribe(status => {
       this.canSave = status === 'VALID' && this.settingsForm.dirty;

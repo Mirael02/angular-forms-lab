@@ -9,7 +9,7 @@
   
   <!-- Loading State dengan Skeleton -->
   <div *ngIf="isLoading" class="loading-container">
-    <mat-card class="skeleton-card">
+    <mat-card class="skeleton-card" ngSkipHydration>
       <div class="skeleton-header"></div>
       <div class="skeleton-content">
         <div class="skeleton-line long"></div>
@@ -17,7 +17,7 @@
         <div class="skeleton-line short"></div>
       </div>
     </mat-card>
-    <mat-card class="skeleton-card">
+    <mat-card class="skeleton-card" ngSkipHydration>
       <div class="skeleton-header"></div>
       <div class="skeleton-content">
         <div class="skeleton-row">
@@ -133,8 +133,8 @@
       </mat-card-content>
     </mat-card>
 
-    <!-- Informasi Perusahaan (Conditional) -->
-    <mat-card class="section-card business-card" *ngIf="isBusiness" appearance="outlined">
+<!-- Informasi Perusahaan (Conditional) -->
+    <mat-card class="section-card business-card" appearance="outlined" *ngIf="isBusiness">
       <mat-card-header>
         <mat-icon mat-card-avatar>corporate_fare</mat-icon>
         <mat-card-title>Informasi Perusahaan</mat-card-title>
@@ -201,7 +201,7 @@
     </mat-card>
 
     <!-- Action Bar -->
-    <mat-card class="action-bar" appearance="outlined">
+    <mat-card class="action-bar" appearance="outlined" ngSkipHydration>
       <mat-card-content>
         <div class="action-content">
           <div class="status-indicator">
