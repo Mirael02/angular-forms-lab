@@ -9,15 +9,15 @@
     </div>
   </div>
 
-  <div *ngIf="currentStep === 0">
+  <div *ngIf="currentStep === 0" class="step-panel">
     <app-step-personal [form]="personalForm" (next)="nextStep()"></app-step-personal>
   </div>
 
-  <div *ngIf="currentStep === 1">
+  <div *ngIf="currentStep === 1" class="step-panel">
     <app-step-account [form]="accountForm" (next)="nextStep()" (prev)="prevStep()"></app-step-account>
   </div>
 
-  <div *ngIf="currentStep === 2">
+  <div *ngIf="currentStep === 2" class="step-panel">
     <app-step-review [allValues]="allValues" [isSubmitting]="isSubmitting" (prev)="prevStep()" (submit)="onSubmit()"></app-step-review>
   </div>
 </div>

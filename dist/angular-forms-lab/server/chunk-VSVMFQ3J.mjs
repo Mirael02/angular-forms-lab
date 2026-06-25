@@ -1,0 +1,2 @@
+import './polyfills.server.mjs';
+import{R as e}from"./chunk-AXVLEKZM.mjs";var o=class a{save(r,t){try{localStorage.setItem(`draft_${r}`,JSON.stringify({data:t,savedAt:new Date().toISOString()}))}catch{}}load(r){try{let t=localStorage.getItem(`draft_${r}`);return t?JSON.parse(t):null}catch{return null}}clear(r){localStorage.removeItem(`draft_${r}`)}static \u0275fac=function(t){return new(t||a)};static \u0275prov=e({token:a,factory:a.\u0275fac,providedIn:"root"})};export{o as a};

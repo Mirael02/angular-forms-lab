@@ -88,7 +88,8 @@ export class RegisterWizard implements OnInit {
 
     setTimeout(() => {
       this.isSubmitting = false;
-      this.snackBar.open('Registrasi berhasil!', 'OK', { duration: 4000 });
-    }, 2000);
+      this.snackBar.open('Registrasi berhasil!', 'OK', { duration: 3000 });
+      this.router.navigate(['/account']);
+    }, 1500);
   }
 }

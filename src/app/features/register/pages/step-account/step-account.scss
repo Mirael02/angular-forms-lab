@@ -80,10 +80,22 @@
   }
 }
 
-// Form Fields
+// Form Fields Layout
+.form-row {
+  display: flex;
+  gap: 16px;
+  flex-wrap: wrap;
+  margin-bottom: 8px;
+}
+
+.form-field {
+  flex: 1;
+  min-width: 250px;
+}
+
 .form-field-full {
   width: 100%;
-  margin-bottom: 16px;
+  margin-top: 8px;
 }
 
 // Enhanced Form Fields
@@ -103,23 +115,22 @@ mat-form-field {
 // Checkbox Section
 .checkbox-section {
   margin-top: 16px;
-  padding: 16px;
+  padding: 16px 20px;
   background: var(--mat-sys-surface-container-low);
   border-radius: 8px;
   
   .terms-checkbox {
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    
     .checkbox-label {
       color: var(--mat-sys-on-surface);
+      font-size: 14px;
+      margin-right: 4px;
     }
     
     .terms-link {
       color: var(--mat-sys-primary);
       text-decoration: none;
       font-weight: 500;
+      font-size: 14px;
       
       &:hover {
         text-decoration: underline;
@@ -199,6 +210,15 @@ mat-form-field {
     mat-card-content {
       padding: 16px;
     }
+  }
+  
+  .form-row {
+    flex-direction: column;
+    gap: 0;
+  }
+  
+  .form-field {
+    min-width: 100%;
   }
   
   .action-bar {
