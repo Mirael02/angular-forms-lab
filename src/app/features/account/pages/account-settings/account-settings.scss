@@ -1,0 +1,379 @@
+// Account Settings Styles - Material Design
+.account-container {
+  padding: 24px;
+  max-width: 900px;
+  margin: 0 auto;
+  
+  .account-header {
+    margin-bottom: 32px;
+    text-align: center;
+    
+    .account-title {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 12px;
+      font-size: 28px;
+      font-weight: 500;
+      color: var(--mat-sys-on-surface);
+      margin: 0 0 8px 0;
+      
+      mat-icon {
+        font-size: 32px;
+        width: 32px;
+        height: 32px;
+        color: var(--mat-sys-primary);
+      }
+    }
+    
+    .account-subtitle {
+      color: var(--mat-sys-on-surface-variant);
+      font-size: 16px;
+      margin: 0;
+    }
+  }
+}
+
+// Loading Skeleton Animation
+.loading-container {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  
+  .skeleton-card {
+    overflow: hidden;
+    
+    .skeleton-header {
+      height: 60px;
+      background: linear-gradient(90deg, 
+        var(--mat-sys-surface-container-low) 25%, 
+        var(--mat-sys-surface-container) 50%, 
+        var(--mat-sys-surface-container-low) 75%);
+      background-size: 200% 100%;
+      animation: shimmer 1.5s infinite;
+      margin-bottom: 16px;
+      border-radius: 8px;
+    }
+    
+    .skeleton-content {
+      padding: 0 16px 16px;
+      
+      .skeleton-row {
+        display: flex;
+        gap: 16px;
+        margin-bottom: 16px;
+      }
+      
+      .skeleton-line {
+        height: 40px;
+        background: linear-gradient(90deg, 
+          var(--mat-sys-surface-container-low) 25%, 
+          var(--mat-sys-surface-container) 50%, 
+          var(--mat-sys-surface-container-low) 75%);
+        background-size: 200% 100%;
+        animation: shimmer 1.5s infinite;
+        border-radius: 4px;
+        
+        &.long { width: 100%; }
+        &.medium { width: 70%; }
+        &.short { width: 40%; }
+        &.full { width: 100%; margin-top: 12px; }
+      }
+    }
+  }
+}
+
+@keyframes shimmer {
+  0% { background-position: 200% 0; }
+  100% { background-position: -200% 0; }
+}
+
+// Form Cards
+.account-form {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+
+.section-card {
+  transition: box-shadow 0.3s ease, transform 0.2s ease;
+  
+  &:hover {
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.12);
+  }
+  
+  mat-card-header {
+    padding: 16px 24px;
+    border-bottom: 1px solid var(--mat-sys-outline-variant);
+    background: var(--mat-sys-surface-container-lowest);
+    
+    mat-icon[mat-card-avatar] {
+      background: var(--mat-sys-primary-container);
+      color: var(--mat-sys-on-primary-container);
+      border-radius: 50%;
+      width: 40px;
+      height: 40px;
+      font-size: 24px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    
+    mat-card-title {
+      font-size: 18px;
+      font-weight: 500;
+      color: var(--mat-sys-on-surface);
+      margin-left: 12px;
+    }
+  }
+  
+  mat-card-content {
+    padding: 24px;
+  }
+}
+
+// Account Type Selection
+.account-type-group {
+  display: flex;
+  gap: 16px;
+  flex-wrap: wrap;
+}
+
+.account-type-option {
+  flex: 1;
+  min-width: 200px;
+  padding: 16px;
+  border: 2px solid var(--mat-sys-outline-variant);
+  border-radius: 12px;
+  transition: all 0.3s ease;
+  
+  &:hover {
+    border-color: var(--mat-sys-primary);
+    background: var(--mat-sys-primary-container);
+  }
+  
+  .option-content {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    
+    mat-icon {
+      font-size: 32px;
+      width: 32px;
+      height: 32px;
+      color: var(--mat-sys-primary);
+    }
+    
+    .option-text {
+      display: flex;
+      flex-direction: column;
+      
+      .option-label {
+        font-weight: 500;
+        font-size: 16px;
+        color: var(--mat-sys-on-surface);
+      }
+      
+      .option-desc {
+        font-size: 13px;
+        color: var(--mat-sys-on-surface-variant);
+        margin-top: 4px;
+      }
+    }
+  }
+}
+
+// Form Fields Layout
+.form-row {
+  display: flex;
+  gap: 16px;
+  flex-wrap: wrap;
+  margin-bottom: 8px;
+}
+
+.form-field {
+  flex: 1;
+  min-width: 250px;
+}
+
+.form-field-full {
+  width: 100%;
+  margin-top: 8px;
+}
+
+// Enhanced Form Fields
+mat-form-field {
+  width: 100%;
+  
+  mat-icon[matPrefix],
+  mat-icon[matSuffix] {
+    color: var(--mat-sys-on-surface-variant);
+  }
+  
+  .mat-mdc-form-field-subscript-wrapper {
+    font-size: 12px;
+  }
+}
+
+// Business Card Highlight
+.business-card {
+  border-left: 4px solid var(--mat-sys-secondary);
+  
+  mat-card-header {
+    background: linear-gradient(135deg, 
+      var(--mat-sys-secondary-container) 0%, 
+      var(--mat-sys-surface-container-lowest) 100%);
+  }
+}
+
+// Action Bar
+.action-bar {
+  position: sticky;
+  bottom: 0;
+  z-index: 100;
+  background: var(--mat-sys-surface);
+  backdrop-filter: blur(8px);
+  
+  .action-content {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 16px;
+  }
+  
+  .status-indicator {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    
+    mat-icon {
+      font-size: 24px;
+      width: 24px;
+      height: 24px;
+    }
+    
+    .status-text {
+      font-size: 14px;
+      color: var(--mat-sys-on-surface-variant);
+      
+      &.dirty {
+        color: var(--mat-sys-error);
+        font-weight: 500;
+      }
+    }
+  }
+  
+  .action-buttons {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    
+    .success-message {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      color: var(--mat-sys-primary);
+      font-weight: 500;
+      animation: fadeIn 0.3s ease;
+      
+      mat-icon {
+        font-size: 20px;
+        width: 20px;
+        height: 20px;
+      }
+    }
+    
+    .save-btn {
+      min-width: 160px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      
+      mat-spinner {
+        margin-right: 0;
+      }
+    }
+  }
+}
+
+// Animations
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(-10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+// Responsive Design
+@media (max-width: 768px) {
+  .account-container {
+    padding: 16px;
+    
+    .account-header {
+      margin-bottom: 24px;
+      
+      .account-title {
+        font-size: 24px;
+        flex-direction: column;
+        gap: 8px;
+      }
+    }
+  }
+  
+  .section-card {
+    mat-card-header {
+      padding: 12px 16px;
+      
+      mat-card-title {
+        font-size: 16px;
+      }
+    }
+    
+    mat-card-content {
+      padding: 16px;
+    }
+  }
+  
+  .account-type-group {
+    flex-direction: column;
+  }
+  
+  .account-type-option {
+    width: 100%;
+  }
+  
+  .form-row {
+    flex-direction: column;
+    gap: 0;
+  }
+  
+  .form-field {
+    min-width: 100%;
+  }
+  
+  .action-bar {
+    .action-content {
+      flex-direction: column;
+      align-items: stretch;
+    }
+    
+    .status-indicator,
+    .action-buttons {
+      justify-content: center;
+    }
+    
+    .save-btn {
+      width: 100%;
+    }
+  }
+}
+
+// Dark Mode Support
+@media (prefers-color-scheme: dark) {
+  .section-card:hover {
+    box-shadow: 0 4px 20px rgba(255, 255, 255, 0.08);
+  }
+  
+  .account-type-option:hover {
+    background: var(--mat-sys-primary-container);
+  }
+}

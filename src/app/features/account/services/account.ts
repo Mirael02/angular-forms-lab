@@ -26,16 +26,19 @@ export class AccountService {
   };
 
   getProfile(): Observable<UserProfile> {
-    return of(this.profile).pipe(delay(800)); 
+    // Simulasi network delay yang realistis (200-300ms)
+    return of(this.profile).pipe(delay(250)); 
   }
 
   isEmailTaken(email: string): Observable<boolean> {
     const taken = ['admin@test.com', 'root@poltek.ac.id', 'noreply@system.com'];
-    return of(taken.includes(email.toLowerCase())).pipe(delay(700));
+    // Delay lebih cepat untuk UX yang lebih responsif
+    return of(taken.includes(email.toLowerCase())).pipe(delay(300));
   }
 
   saveProfile(data: Partial<UserProfile>): Observable<void> {
     Object.assign(this.profile, data);
-    return of(undefined).pipe(delay(1000));
+    // Simulasi save yang lebih cepat
+    return of(undefined).pipe(delay(500));
   }
 }
