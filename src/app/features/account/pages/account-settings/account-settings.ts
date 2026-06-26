@@ -1,9 +1,8 @@
-import { Component, OnInit, AfterViewInit, inject, DestroyRef } from '@angular/core';
+import { Component, OnInit, OnDestroy, inject, ChangeDetectorRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormBuilder, FormGroup, Validators, AbstractControl, ReactiveFormsModule } from '@angular/forms';
-import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
-import { Observable, timer, of } from 'rxjs';
-import { switchMap, map, catchError, startWith, distinctUntilChanged } from 'rxjs/operators';
+import { Subject, Observable, timer, of } from 'rxjs';
+import { switchMap, map, catchError, startWith, distinctUntilChanged, takeUntil } from 'rxjs/operators';
 
 import { AccountService, UserProfile } from '../../services/account';
 import { noWhitespaceValidator } from '../../../../core/validators/password.validator';
@@ -31,13 +30,13 @@ import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
     MatProgressSpinnerModule
   ],
   templateUrl: './account-settings.html',
-  styleUrls: ['./account-settings.scss'],
-  host: { 'ngSkipHydration': 'true' }
+  styleUrls: ['./account-settings.scss']
 })
-export class AccountSettings implements OnInit, AfterViewInit {
+export class AccountSettings implements OnInit, OnDestroy {
   private fb = inject(FormBuilder);
   private accountSvc = inject(AccountService);
-  private destroyRef = inject(DestroyRef);
+  private cdr = inject(ChangeDetectorRef);
+  private destroys = new Subject<void>();
 
   settingsForm!: FormGroup;
   isLoading = true;
@@ -46,21 +45,17 @@ export class AccountSettings implements OnInit, AfterViewInit {
   saveSuccess = false;
 
   private currentEmail = '';
-  private initialized = false;
 
   ngOnInit() {
     this.buildForm();
-  }
-
-  ngAfterViewInit() {
-    this.markInitialized();
     this.setupConditionalFields();
     this.setupSaveButton();
     this.loadProfile();
   }
 
-  private markInitialized() {
-    this.initialized = true;
+  ngOnDestroy() {
+    this.destroys.next();
+    this.destroys.complete();
   }
 
   buildForm() {
@@ -75,7 +70,7 @@ export class AccountSettings implements OnInit, AfterViewInit {
         npwp: [''],
         businessSector: ['']
       })
-    }, { updateOn: 'blur' });
+    });
   }
 
   get accountType() { return this.settingsForm.get('accountType'); }
@@ -84,34 +79,37 @@ export class AccountSettings implements OnInit, AfterViewInit {
   get isBusiness() { return this.accountType?.value === 'business'; }
 
   loadProfile() {
-    this.isLoading = true;
-    this.accountSvc.getProfile().subscribe({
-      next: (profile) => {
-        this.currentEmail = profile.email;
+    this.accountSvc.getProfile()
+      .pipe(takeUntil(this.destroys))
+      .subscribe({
+        next: (profile) => {
+          this.currentEmail = profile.email;
 
-        this.settingsForm.patchValue({
-          accountType: profile.accountType,
-          fullName: profile.fullName,
-          email: profile.email,
-          phone: profile.phone,
-          bio: profile.bio || '',
-          business: {
-            companyName: profile.companyName || '',
-            npwp: profile.npwp || '',
-            businessSector: profile.businessSector || ''
-          }
-        });
+          this.settingsForm.patchValue({
+            accountType: profile.accountType,
+            fullName: profile.fullName,
+            email: profile.email,
+            phone: profile.phone,
+            bio: profile.bio || '',
+            business: {
+              companyName: profile.companyName || '',
+              npwp: profile.npwp || '',
+              businessSector: profile.businessSector || ''
+            }
+          });
 
-        this.settingsForm.markAsPristine();
-        this.settingsForm.markAsUntouched();
-        
-        this.isLoading = false; 
-      },
-      error: (err) => {
-        console.error('Gagal memuat profil', err);
-        this.isLoading = false;
-      }
-    });
+          this.settingsForm.markAsPristine();
+          this.settingsForm.markAsUntouched();
+          
+          this.isLoading = false;
+          this.cdr.detectChanges();
+        },
+        error: (err) => {
+          console.error('Gagal memuat profil', err);
+          this.isLoading = false;
+          this.cdr.detectChanges();
+        }
+      });
   }
 
   asyncEmailValidator() {
@@ -133,7 +131,7 @@ export class AccountSettings implements OnInit, AfterViewInit {
   setupConditionalFields() {
     this.accountType!.valueChanges.pipe(
       startWith(this.accountType!.value),
-      takeUntilDestroyed(this.destroyRef)
+      takeUntil(this.destroys)
     ).subscribe((type: string) => {
       const bizGroup = this.businessGrp;
       if (type === 'business') {
@@ -160,7 +158,7 @@ export class AccountSettings implements OnInit, AfterViewInit {
     this.settingsForm.statusChanges.pipe(
       startWith(this.settingsForm.status),
       distinctUntilChanged(),
-      takeUntilDestroyed(this.destroyRef)
+      takeUntil(this.destroys)
     ).subscribe(status => {
       this.canSave = status === 'VALID' && this.settingsForm.dirty;
     });
